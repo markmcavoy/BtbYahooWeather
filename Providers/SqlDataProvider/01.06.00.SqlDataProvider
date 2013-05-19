@@ -1,0 +1,85 @@
+if not exists ( select * from INFORMATION_SCHEMA.COLUMNS
+where TABLE_NAME='{objectQualifier}BTBWeatherFeed'
+and COLUMN_NAME='defaultFeed' )
+
+begin
+
+ALTER TABLE {databaseOwner}[{objectQualifier}BTBWeatherFeed]
+	ADD defaultFeed bit not null default(0)
+
+end
+go
+
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}BTBWeatherFeedSetDefault]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}[{objectQualifier}BTBWeatherFeedSetDefault]
+GO
+
+create PROCEDURE {databaseOwner}{objectQualifier}BTBWeatherFeedSetDefault
+(
+ @moduleId int,
+ @weatherId int
+)
+AS
+
+set nocount on
+
+ update [{objectQualifier}BTBWeatherFeed] set defaultFeed=0
+		where moduleId=@moduleId
+		
+	update [{objectQualifier}BTBWeatherFeed] set defaultFeed=1
+		where moduleId=@moduleId and
+					weatherId=@weatherId
+
+return 
+
+go
+
+alter PROCEDURE {databaseOwner}[{objectQualifier}BTBWeatherFeedGetByModule]
+(
+ @moduleId int
+)
+AS
+
+SELECT
+	[weatherId],
+	[moduleId],
+	[ttl],
+	[updatedDate],
+	[cachedDate],
+	[feed],
+	[url],
+	[transformedFeed],
+	[locationName],
+	[defaultFeed]
+FROM {objectQualifier}BTBWeatherFeed
+	WHERE moduleId = @moduleId
+
+GO
+
+alter PROCEDURE {databaseOwner}[{objectQualifier}BTBWeatherFeedGet]
+(
+	@weatherId int
+)
+AS
+
+SET NOCOUNT ON
+
+SELECT
+	[weatherId],
+	[moduleId],
+	[ttl],
+	[updatedDate],
+	[cachedDate],
+	[feed],
+	[url],
+	[transformedFeed],
+	[locationName],
+	[defaultFeed]
+FROM {objectQualifier}BTBWeatherFeed 
+WHERE
+	[weatherId] = @weatherId
+
+return
+
+GO
