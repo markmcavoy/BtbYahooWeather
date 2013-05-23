@@ -2,8 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiteTheBullet.BTBYahooWeather", "BiteTheBullet.BTBYahooWeather.csproj", "{BC3B32B5-04E9-4585-9DB5-42A75859E774}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiteTheBullet.BTBYahooWeather.SqlDataProvider", "Providers\SqlDataProvider\BiteTheBullet.BTBYahooWeather.SqlDataProvider.csproj", "{308B6598-DDFC-4C26-AC23-1501BDF06C37}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,10 +12,6 @@ Global
 		{BC3B32B5-04E9-4585-9DB5-42A75859E774}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC3B32B5-04E9-4585-9DB5-42A75859E774}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC3B32B5-04E9-4585-9DB5-42A75859E774}.Release|Any CPU.Build.0 = Release|Any CPU
-		{308B6598-DDFC-4C26-AC23-1501BDF06C37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{308B6598-DDFC-4C26-AC23-1501BDF06C37}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{308B6598-DDFC-4C26-AC23-1501BDF06C37}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{308B6598-DDFC-4C26-AC23-1501BDF06C37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -40,9 +40,11 @@ using DotNetNuke.Entities.Modules;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.Services.Exceptions;
 using DotNetNuke.UI;
+using System.Linq;
 
-using BiteTheBullet.DNN.Modules.BTBYahooWeather.Business;
 using DotNetNuke.Entities.Users;
+using BiteTheBullet.DNN.Modules.BTBYahooWeather.Components;
+using System.Collections.Generic;
 
 namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 {
@@ -90,9 +92,9 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 				BTBWeatherFeedInfo info;
 				if (!Page.IsPostBack) 
 				{
-					ArrayList weatherFeeds = controller.GetByModuleId(ModuleId);
+                    var weatherFeeds = new DataProvider().GetBTBWeatherFeedByModule(ModuleId);
 
-					if((weatherFeeds == null) | (weatherFeeds.Count == 0))
+					if((weatherFeeds == null))
 					{
 						//this module does not have a configured
 						//weather feed, info the user						
@@ -103,17 +105,15 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 					}
 					
 
-					if(weatherFeeds.Count > 1)
+					if(weatherFeeds.Count() > 1)
 					{
 						ValidateFeedsHaveLocationName(weatherFeeds);
 
 						pnlDropDown.Visible = true;
 						ddlLocations.DataTextField = "LocationName";
 						ddlLocations.DataValueField = "WeatherId";
-
-						weatherFeeds.Sort(new BTBYahooWeatherInfoIComparer());
-
-						ddlLocations.DataSource = weatherFeeds;
+                        
+                        ddlLocations.DataSource = weatherFeeds.OrderBy(w => w.LocationName);
 						ddlLocations.DataBind();
 					}
 					
@@ -161,7 +161,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 					}
 					else
 					{					
-						info = (BTBWeatherFeedInfo)weatherFeeds[0];
+						info = weatherFeeds.FirstOrDefault();
 					}
 					
 					DisplayFeed(info);	
@@ -189,9 +189,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 		private void ddlLocations_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
 			int weatherId = Int32.Parse(ddlLocations.SelectedValue);
-
-			BTBWeatherFeedController controller = new BTBWeatherFeedController();
-			BTBWeatherFeedInfo info = controller.Get(weatherId);
+            BTBWeatherFeedInfo info = new DataProvider().GetBTBWeatherFeed(weatherId);
 
             //determine if user persistance is enabled
             //and store the selection
@@ -232,7 +230,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
             }
         }
 
-		private void ValidateFeedsHaveLocationName(ArrayList feeds)
+		private void ValidateFeedsHaveLocationName(IEnumerable<BTBWeatherFeedInfo> feeds)
 		{
 			//if we find a feeds without a name, this could becuase we
 			//have just converted to 1.1 of the app or have imported
@@ -252,13 +250,16 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 		protected void DisplayFeed(BTBWeatherFeedInfo info)
 		{
 			//check if we have a transformed feed or the item has expired from cache
-			if(info.TransformedFeed == Null.NullString | info.CachedDate < DateTime.Now | info.LocationName == Null.NullString)
-			{
-				BTBWeatherFeedController controller = new BTBWeatherFeedController();
-				controller.UpdateWeatherFeed(info, this.PortalSettings, this.ModuleConfiguration);
-			}
+            if (info != null)
+            {
+                if (info.TransformedFeed == Null.NullString | info.CachedDate < DateTime.Now | info.LocationName == Null.NullString)
+                {
+                    BTBWeatherFeedController controller = new BTBWeatherFeedController();
+                    controller.UpdateWeatherFeed(info, this.PortalSettings, this.ModuleConfiguration);
+                }
 
-			litOutput.Text = info.TransformedFeed;
+                litOutput.Text = info.TransformedFeed; 
+            }
 		}
 
 		#region Optional Interfaces

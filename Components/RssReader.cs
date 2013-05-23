@@ -35,7 +35,7 @@ using System.Net;
 using System.Xml;
 using System.Xml.XPath;
 
-namespace BiteTheBullet.DNN.Utils
+namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
 {
 	/// <summary>
 	/// Readers a RSS 2.0 feed, this is a lightweight reader since we only

@@ -39,8 +39,9 @@ using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.Services.Exceptions;
-using BiteTheBullet.DNN.Modules.BTBYahooWeather.Business;
 using DotNetNuke.Entities.Profile;
+using BiteTheBullet.DNN.Modules.BTBYahooWeather.Components;
+using System.Linq;
 
 namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 {
@@ -117,22 +118,21 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 
 		private void LoadExistingData()
 		{
-			BTBWeatherFeedController objCtlBTBYahooWeather = new BTBWeatherFeedController();
-			ArrayList list = objCtlBTBYahooWeather.GetByModuleId(this.ModuleId);
+			var list = new DataProvider().GetBTBWeatherFeedByModule(this.ModuleId);
+            var controller = new BTBWeatherFeedController();
+
 
 			//sort the list by location name
-			list.Sort(new BTBYahooWeatherInfoIComparer());
-
-			lstLocations.DataSource = list;
+			lstLocations.DataSource = list.OrderBy(w => w.LocationName);
 			lstLocations.DataBind();
 
 
 			//if we have one or more feed get the current temperature unit
 			//we need this to set the correct radio button checked
-			if(list.Count > 0)
+			if(list.Count() > 0)
 			{
-				BTBWeatherFeedInfo info = (BTBWeatherFeedInfo)list[0];
-				BTBWeatherFeedController.TemperatureScale tempScale = objCtlBTBYahooWeather.ExtractTemperatureScaleFromUrl(info.Url);
+				BTBWeatherFeedInfo info = (BTBWeatherFeedInfo)list.First();
+                BTBWeatherFeedController.TemperatureScale tempScale = controller.ExtractTemperatureScaleFromUrl(info.Url);
 				
 				if(tempScale == BTBWeatherFeedController.TemperatureScale.Celsius)
 					rbTempC.Checked = true;
@@ -148,7 +148,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 				ddlDefaultFeed.DataBind();
 				
 				//set the default feed
-				BTBWeatherFeedInfo defaultWeatherFeed = objCtlBTBYahooWeather.GetDefaultFeed(list);
+                BTBWeatherFeedInfo defaultWeatherFeed = controller.GetDefaultFeed(list);
 				if(defaultWeatherFeed != null)
 				{
 					ddlDefaultFeed.Enabled = true;
@@ -226,7 +226,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 
 			objBTBYahooWeather.Url = objCtlBTBYahooWeather.CreateFeedUrl(txtFeedCode.Text, tempScale);
 
-			objBTBYahooWeather.WeatherId = objCtlBTBYahooWeather.Add(objBTBYahooWeather);
+			objBTBYahooWeather.WeatherId = new DataProvider().AddBTBWeatherFeed(objBTBYahooWeather);
 			objCtlBTBYahooWeather.UpdateWeatherFeed(objBTBYahooWeather, this.PortalSettings, this.ModuleConfiguration);
 
 		}
@@ -249,9 +249,9 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 		{
 			//remove the cached transformation and set the url to
 			//the correct one for the new unit of temperature
-			BTBWeatherFeedController controller = new BTBWeatherFeedController();
 
 			BTBWeatherFeedController.TemperatureScale tempScale;
+            var controller = new BTBWeatherFeedController();
 
 			if(rbTempC.Checked)
 				tempScale = BTBWeatherFeedController.TemperatureScale.Celsius;
@@ -259,7 +259,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 				tempScale = BTBWeatherFeedController.TemperatureScale.Fahrenheit;
 
 
-			ArrayList feeds = controller.GetByModuleId(ModuleId);
+			var feeds = new DataProvider().GetBTBWeatherFeedByModule(ModuleId);
 
 			foreach(BTBWeatherFeedInfo info in feeds)
 			{
@@ -267,7 +267,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 				info.Url = controller.CreateFeedUrl(controller.ExtractWeatherCodeFromUrl(info.Url),
 					tempScale);
 
-				controller.Update(info);
+				new DataProvider().UpdateBTBWeatherFeed(info);
 			}
 		}
 
@@ -290,12 +290,12 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 //			else if(rbMediumDisplayFiveDays.Checked)
 //				mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "medium5");
 
-			ArrayList feeds = controller.GetByModuleId(ModuleId);
+			var feeds = new DataProvider().GetBTBWeatherFeedByModule(ModuleId);
 
 			foreach(BTBWeatherFeedInfo info in feeds)
 			{
 				info.TransformedFeed = null;
-				controller.Update(info);
+				new DataProvider().UpdateBTBWeatherFeed(info);
 			}
 		}
 
@@ -435,8 +435,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 		private void cmdDeleteImage_Click(object sender, System.Web.UI.ImageClickEventArgs e)
 		{
 			int weatherId = Int32.Parse(lstLocations.SelectedValue);
-			BTBWeatherFeedController controller = new BTBWeatherFeedController();
-			controller.Delete(weatherId);
+			new DataProvider().DeleteBTBWeatherFeed(weatherId);
 
 			LoadExistingData();
 		}

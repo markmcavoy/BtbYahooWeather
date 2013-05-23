@@ -37,18 +37,17 @@ using System.Web;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
+using System.Linq;
 using DotNetNuke;
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Services.Localization;
-
-using BiteTheBullet.DNN.Utils;
-using BiteTheBullet.DNN.Modules.BTBYahooWeather.Data;
 using DotNetNuke.Entities.Host;
+using System.Collections.Generic;
 
-namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Business
+namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
 {
 	public class BTBWeatherFeedController : DotNetNuke.Entities.Modules.IPortable
 	{
@@ -77,9 +76,9 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Business
 		/// <summary>
 		/// Gets the default weather feed from the list of weatherinfo
 		/// </summary>
-		public BTBWeatherFeedInfo GetDefaultFeed(ArrayList weatherList)
+        public BTBWeatherFeedInfo GetDefaultFeed(IEnumerable<BTBWeatherFeedInfo> weatherList)
 		{
-			if(weatherList.Count == 0)
+			if(weatherList != null)
 				return null;
 			
 			foreach(BTBWeatherFeedInfo item in weatherList)
@@ -88,7 +87,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Business
 					return item;
 			}
 			
-			return (BTBWeatherFeedInfo)weatherList[0];
+			return (BTBWeatherFeedInfo)weatherList.First();
 		}
 		
 		/// <summary>
@@ -96,7 +95,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Business
 		/// </summary>
 		public void SetDefaultFeed(int moduleId, int weatherId)
 		{
-			DataProvider.Instance().SetDefaultFeed(moduleId, weatherId);
+			new DataProvider().SetDefaultFeed(moduleId, weatherId);
 		}	
 
 		/// <summary>
@@ -227,60 +226,9 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Business
 			info.LocationName = reader.LocationName();
 
 			//cache the feed in the database
-			BTBWeatherFeedController controller = new BTBWeatherFeedController();
-			controller.Update(info);
+            new DataProvider().UpdateBTBWeatherFeed(info);
 		}
 
-
-		#region DAL methods
-
-		public BTBWeatherFeedInfo Get(int weatherId)
-		{
-			return (BTBWeatherFeedInfo)DotNetNuke.Common.Utilities.CBO.FillObject(DataProvider.Instance().GetBTBWeatherFeed(weatherId), typeof(BTBWeatherFeedInfo));
-		}
-
-		/// <summary>
-		/// Returns a list of WeatherInfo objects for the given module id
-		/// </summary>
-		/// <param name="moduleId"></param>
-		/// <returns></returns>
-		public ArrayList GetByModuleId(int moduleId)
-		{
-			return DotNetNuke.Common.Utilities.CBO.FillCollection(DataProvider.Instance().GetBTBWeatherFeedByModule(moduleId), typeof(BTBWeatherFeedInfo));
-		}
-
-	
-		public int Add(BTBWeatherFeedInfo objBTBWeatherFeed)
-		{
-			return (int)DataProvider.Instance().AddBTBWeatherFeed(objBTBWeatherFeed.ModuleId, 
-													objBTBWeatherFeed.Ttl, 
-													objBTBWeatherFeed.UpdatedDate, 
-													objBTBWeatherFeed.CachedDate, 
-													objBTBWeatherFeed.Feed, 
-													objBTBWeatherFeed.Url, 
-													objBTBWeatherFeed.TransformedFeed,
-													objBTBWeatherFeed.LocationName);
-		}
-	
-		public void Update(BTBWeatherFeedInfo objBTBWeatherFeed)
-		{
-			DataProvider.Instance().UpdateBTBWeatherFeed(objBTBWeatherFeed.WeatherId, 
-												objBTBWeatherFeed.ModuleId, 
-												objBTBWeatherFeed.Ttl, 
-												objBTBWeatherFeed.UpdatedDate, 
-												objBTBWeatherFeed.CachedDate, 
-												objBTBWeatherFeed.Feed, 
-												objBTBWeatherFeed.Url, 
-												objBTBWeatherFeed.TransformedFeed,
-												objBTBWeatherFeed.LocationName);
-		}
-		
-		public void Delete(int weatherId)
-		{
-			DataProvider.Instance().DeleteBTBWeatherFeed(weatherId);
-		}
-
-		#endregion
 
 		#endregion
 
@@ -289,9 +237,9 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Business
 		public string ExportModule(int ModuleID)
 		{
 			string xmlExport = "";
-			ArrayList feeds = this.GetByModuleId(ModuleID);
+			var feeds = new DataProvider().GetBTBWeatherFeedByModule(ModuleID);
 
-			if(feeds != null & feeds.Count > 0)
+			if(feeds != null)
 			{
 				StringBuilder sb = new StringBuilder();
 				sb.Append("<BTBYahooWeather>");
@@ -325,7 +273,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Business
 					info.ModuleId = ModuleID;
 					info.Url = nodeList[i].InnerText;
 
-					Add(info);
+					new DataProvider().AddBTBWeatherFeed(info);
 				}
 			}
 		}

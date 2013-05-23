@@ -28,7 +28,7 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <OldToolsVersion>2.0</OldToolsVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -45,6 +45,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>..\..\bin\</OutputPath>
@@ -133,9 +134,6 @@
     <Compile Include="Components\BTBYahooWeatherInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Components\BTBYahooWeatherInfoIComparer.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Components\DataProvider.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -159,6 +157,10 @@
       <DependentUpon>BTBYahooWeatherEdit.ascx.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="01.00.00.SqlDataProvider" />
+    <None Include="01.02.00.SqlDataProvider" />
+    <None Include="01.06.00.SqlDataProvider" />
+    <None Include="02.00.00.SqlDataProvider" />
     <None Include="App_LocalResources\BTBYahooWeather.ascx.resx">
       <SubType>Designer</SubType>
     </None>
@@ -166,7 +168,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="BTBYahooWeather.dnn" />
-    <None Include="Installation\BTBYahooWeather.dnn" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Documentation\" />

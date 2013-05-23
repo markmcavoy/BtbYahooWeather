@@ -30,10 +30,13 @@
 
 using System;
 using System.Data;
-using BiteTheBullet.DNN.Modules.BTBYahooWeather.Data;
+using DotNetNuke.ComponentModel.DataAnnotations;
 
-namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Business
+namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
 {
+
+    [TableName("BTBWeatherFeed")]
+    [Scope("ModuleId")]
 	public class BTBWeatherFeedInfo
 	{
 		#region "Private Members"
@@ -127,6 +130,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Business
 			set{ _locationName = value;}
 		}
 
+        [IgnoreColumn]
 		public string AdminDisplayName
 		{
 			get

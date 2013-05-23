@@ -36,46 +36,68 @@ using DotNetNuke;
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Services.Localization;
+using System.Collections;
+using DotNetNuke.Data;
+using System.Collections.Generic;
 
-namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Data
+namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
 {
-	public abstract class DataProvider
+	public class DataProvider
 	{
-		#region Shared/Static Methods
-        // singleton reference to the instantiated object 
-		private static DataProvider objProvider = null;
+        public BTBWeatherFeedInfo GetBTBWeatherFeed(int weatherId)
+        {
+            using (var dataContext = DataContext.Instance())
+            {
+                var rep = dataContext.GetRepository<BTBWeatherFeedInfo>();
+                return rep.GetById<int>(weatherId);
+            }
+        }
 
-		// constructor
-		static DataProvider()
-		{
-			CreateProvider();
-		}
+        public IEnumerable<BTBWeatherFeedInfo> GetBTBWeatherFeedByModule(int moduleId)
+        {
+            using (var dataContext = DataContext.Instance())
+            {
+                var rep = dataContext.GetRepository<BTBWeatherFeedInfo>();
+                return rep.Get<int>(moduleId);
+            }
+        }
 
-		// dynamically create provider
-		private static void CreateProvider()
-		{
-			objProvider = ((DataProvider)DotNetNuke.Framework.Reflection.CreateObject("data", "BiteTheBullet.DNN.Modules.BTBYahooWeather.Data", "BiteTheBullet.DNN.Modules.BTBYahooWeather"));
-		}
+		public int AddBTBWeatherFeed(BTBWeatherFeedInfo newFeed)
+        {
+            using (var dataContext = DataContext.Instance())
+            {
+                var rep = dataContext.GetRepository<BTBWeatherFeedInfo>();
+                rep.Insert(newFeed);
+                return newFeed.WeatherId;
+            }
+        }
 
-		// return the provider
-		public static DataProvider Instance()
-		{
-			return objProvider;
-		}
+        public void UpdateBTBWeatherFeed(BTBWeatherFeedInfo feed)
+        {
+            using (var dataContext = DataContext.Instance())
+            {
+                var rep = dataContext.GetRepository<BTBWeatherFeedInfo>();
+                rep.Update(feed);
+            }
+        }
 
-		#endregion
+        public void DeleteBTBWeatherFeed(int weatherId)
+        {
+            using (var dataContext = DataContext.Instance())
+            {
+                var rep = dataContext.GetRepository<BTBWeatherFeedInfo>();
+                rep.Delete("WHERE weatherId=@0", weatherId);
+            }
+        }
 
-		#region "BTBWeatherFeed Abstract Methods"
-		public abstract IDataReader GetBTBWeatherFeed(int weatherId);
-		public abstract IDataReader GetBTBWeatherFeedByModule(int moduleId);
-		public abstract int AddBTBWeatherFeed(int moduleId , int ttl , DateTime updatedDate , 
-												DateTime cachedDate , string feed , string url, 
-												string transformedFeed, string locationName);
-		public abstract void UpdateBTBWeatherFeed(int weatherId, int moduleId , int ttl ,
-													DateTime updatedDate , DateTime cachedDate , string feed , 
-													string url, string transformedFeed, string locationName);
-		public abstract void DeleteBTBWeatherFeed(int weatherId);
-		public abstract void SetDefaultFeed(int moduleId, int weatherId);
-		#endregion
+        public void SetDefaultFeed(int moduleId, int weatherId)
+        {
+            using (var dataContext = DataContext.Instance())
+            {
+                var rep = dataContext.GetRepository<BTBWeatherFeedInfo>();
+                rep.Update("SET defaultFeed=0 WHERE moduleId=@0", moduleId);
+                rep.Update("SET defaultFeed=1 WHERE weatherId=@0", weatherId);
+            }
+        }
 	}
 }
