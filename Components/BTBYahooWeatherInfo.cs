@@ -37,6 +37,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
 
     [TableName("BTBWeatherFeed")]
     [Scope("ModuleId")]
+    [PrimaryKey("WeatherId")]
 	public class BTBWeatherFeedInfo
 	{
 		#region "Private Members"
@@ -55,6 +56,8 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
 		#region "Constructors"
 		public BTBWeatherFeedInfo()
 		{
+            UpdatedDate = DateTime.Now;
+            CachedDate = DateTime.Now;
 		}
 
 		public BTBWeatherFeedInfo(int weatherId, int moduleId , int ttl , DateTime updatedDate , 

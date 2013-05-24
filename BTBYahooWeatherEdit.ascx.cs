@@ -209,7 +209,6 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 		private void AddFeed()
 		{
 			BTBWeatherFeedInfo objBTBYahooWeather = new BTBWeatherFeedInfo();
-			objBTBYahooWeather = ((BTBWeatherFeedInfo)CBO.InitializeObject(objBTBYahooWeather, typeof(BTBWeatherFeedInfo)));
 					
 			BTBWeatherFeedController objCtlBTBYahooWeather = new BTBWeatherFeedController();
 

@@ -19,8 +19,7 @@
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
     <OutputType>Library</OutputType>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace>BiteTheBullet.DNN.Modules.BTBYahooWeather</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>
     </StartupObject>
@@ -117,9 +116,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="assemblyinfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="BTBYahooWeather.ascx.cs">
       <DependentUpon>BTBYahooWeather.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -134,21 +130,23 @@
     <Compile Include="Components\BTBYahooWeatherInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Components\BTBYahooWeatherSettings.cs" />
     <Compile Include="Components\DataProvider.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Components\RssReader.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Properties\assemblyinfo.cs" />
     <Content Include="BTBYahooWeather.ascx" />
     <Content Include="BTBYahooWeatherEdit.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="weatherReport.xsl" />
-    <Content Include="weatherReportFive.xsl" />
-    <Content Include="weatherReportMedium.xsl" />
-    <Content Include="weatherReportMediumFive.xsl" />
-    <Content Include="weatherReportSmall.xsl" />
+    <Content Include="Templates\Xslt\weatherReport.xsl" />
+    <Content Include="Templates\Xslt\weatherReportFive.xsl" />
+    <Content Include="Templates\Xslt\weatherReportMedium.xsl" />
+    <Content Include="Templates\Xslt\weatherReportMediumFive.xsl" />
+    <Content Include="Templates\Xslt\weatherReportSmall.xsl" />
     <EmbeddedResource Include="BTBYahooWeather.ascx.resx">
       <DependentUpon>BTBYahooWeather.ascx.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -172,6 +170,7 @@
   <ItemGroup>
     <Folder Include="Documentation\" />
     <Folder Include="Providers\" />
+    <Folder Include="Templates\Razor\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

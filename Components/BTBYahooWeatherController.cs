@@ -107,7 +107,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
 		/// <returns></returns>
 		public string CreateFeedUrl(string weatherStationCode, TemperatureScale tempScale)
 		{
-			return BASE_URL + "?p=" + weatherStationCode + "&u=" + 
+			return BASE_URL + "?w=" + weatherStationCode + "&u=" + 
 							(tempScale == TemperatureScale.Celsius ? "c" : "f");	
 		}
 
@@ -157,59 +157,11 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
 			//get the raw feed
 			info.Feed = reader.Response();
 
-			XmlUrlResolver resolver = new XmlUrlResolver();
-			resolver.Credentials = System.Net.CredentialCache.DefaultCredentials;
+            //work out if we are going to use the XSLT files or the razor engine
+            //to render the weather into HTML
 
-			XPathDocument doc = new XPathDocument(new XmlTextReader(info.Feed, XmlNodeType.Document, null));			
-			MemoryStream ms = new MemoryStream();
-			XslTransform transform = new XslTransform();
 
-			//if we don't have a custom XSLT defined then we should just use the 
-			//default one which we install with the module
-			string xslFile = null;
 
-			ModuleController mc = new ModuleController();
-			Hashtable settings = mc.GetTabModuleSettings(moduleConfiguration.TabModuleID);
-			if(settings[TABMODULE_DISPLAYMODE] != null)
-			{
-				string displayMode = settings[TABMODULE_DISPLAYMODE].ToString();
-
-				/*
-				 * Version 1.4 change 8/5/2008
-				 * 
-				 * The five day forecast is no longer available, due the not having the
-				 * data in the RSS feed. Any option which used this should
-				 * just use the correct 2 day forecast instead
-				 * */
-				switch(displayMode)
-				{
-					case "full":
-					case "full5":
-						xslFile = HttpContext.Current.Server.MapPath("~/DesktopModules/BTBYahooWeather/weatherReport.xsl");
-						break;
-
-					case "medium":
-					case "medium5":
-						xslFile = HttpContext.Current.Server.MapPath("~/DesktopModules/BTBYahooWeather/weatherReportMedium.xsl");
-						break;
-
-					case "summary":
-						xslFile = HttpContext.Current.Server.MapPath("~/DesktopModules/BTBYahooWeather/weatherReportSmall.xsl");
-						break;
-				}
-
-			}
-			else
-				xslFile = HttpContext.Current.Server.MapPath("~/DesktopModules/BTBYahooWeather/weatherReport.xsl"); 
-
-			transform.Load(xslFile);
-			transform.Transform(doc, null, ms, resolver);
-
-			ms.Position = 0;
-			info.TransformedFeed = new StreamReader(ms, System.Text.Encoding.UTF8).ReadToEnd();
-
-			//clean up
-			ms.Close();
 			
 			//get the ttl
 			int ttl = reader.Ttl();
@@ -231,6 +183,63 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
 
 
 		#endregion
+
+        private void RenderHtmlUsingXslt(BTBWeatherFeedInfo info)
+        {
+            XmlUrlResolver resolver = new XmlUrlResolver();
+            resolver.Credentials = System.Net.CredentialCache.DefaultCredentials;
+
+            XPathDocument doc = new XPathDocument(new XmlTextReader(info.Feed, XmlNodeType.Document, null));
+            MemoryStream ms = new MemoryStream();
+            XslTransform transform = new XslTransform();
+
+            //if we don't have a custom XSLT defined then we should just use the 
+            //default one which we install with the module
+            string xslFile = null;
+
+            //ModuleController mc = new ModuleController();
+            //Hashtable settings = mc.GetTabModuleSettings(moduleConfiguration.TabModuleID);
+            //if (settings[TABMODULE_DISPLAYMODE] != null)
+            //{
+            //    string displayMode = settings[TABMODULE_DISPLAYMODE].ToString();
+
+            //    /*
+            //     * Version 1.4 change 8/5/2008
+            //     * 
+            //     * The five day forecast is no longer available, due the not having the
+            //     * data in the RSS feed. Any option which used this should
+            //     * just use the correct 2 day forecast instead
+            //     * */
+            //    switch (displayMode)
+            //    {
+            //        case "full":
+            //        case "full5":
+            //            xslFile = HttpContext.Current.Server.MapPath("~/DesktopModules/BTBYahooWeather/Templates/Xslt/weatherReport.xsl");
+            //            break;
+
+            //        case "medium":
+            //        case "medium5":
+            //            xslFile = HttpContext.Current.Server.MapPath("~/DesktopModules/BTBYahooWeather/Templates/Xslt/weatherReportMedium.xsl");
+            //            break;
+
+            //        case "summary":
+            //            xslFile = HttpContext.Current.Server.MapPath("~/DesktopModules/BTBYahooWeather/Templates/Xslt/weatherReportSmall.xsl");
+            //            break;
+            //    }
+
+            //}
+            //else
+            //    xslFile = HttpContext.Current.Server.MapPath("~/DesktopModules/BTBYahooWeather/Templates/Xslt/weatherReport.xsl");
+
+            transform.Load(xslFile);
+            transform.Transform(doc, null, ms, resolver);
+
+            ms.Position = 0;
+            info.TransformedFeed = new StreamReader(ms, System.Text.Encoding.UTF8).ReadToEnd();
+
+            //clean up
+            ms.Close();
+        }
 
 		#region "Optional Interfaces"		
 	
