@@ -45,11 +45,10 @@ using System.Linq;
 
 namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 {
-	public abstract class BTBYahooWeatherEdit : PortalModuleBase
+	public abstract class BTBYahooWeatherEdit : ModuleBase
 	{
         //const used to access the settings key/value pairs
 		private const string VIEWSTATE_TEMPERATURE_SCALE = "BTBYahooWeather_TempScale";
-		private const string TABMODULE_DISPLAYMODE= "BTBYahooWeather_DisplayMode";
         private const string USER_PERSONIALISATION = "BTBYahooWeather_UserPersist";
 
 		#region Web Form Designer generated code
@@ -116,9 +115,11 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 			}
 		}
 
+        
+
 		private void LoadExistingData()
 		{
-			var list = new DataProvider().GetBTBWeatherFeedByModule(this.ModuleId);
+			var list = DataProvider.GetBTBWeatherFeedByModule(this.ModuleId);
             var controller = new BTBWeatherFeedController();
 
 
@@ -160,48 +161,43 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 					ddlDefaultFeed.Enabled = false;
 			}
 
+            //todo: MM fix me
 			//load the current display defined for this module
-			ModuleController mc = new ModuleController();
-			Hashtable settings = mc.GetTabModuleSettings(this.TabModuleId);
+            //ModuleController mc = new ModuleController();
+            //Hashtable settings = mc.GetTabModuleSettings(this.TabModuleId);
 						
-			object displayMode = settings[TABMODULE_DISPLAYMODE] ?? "full";
-			if(displayMode != null)
-			{
-				/*
-				 * Version 1.4 change 8/5/2008
-				 * 
-				 * The five day forecast is no longer available, due the not having the
-				 * data in the RSS feed. Any option which used this should
-				 * just use the correct 2 day forecast instead
-				 * */
-				switch(displayMode.ToString())
-				{
-					case "full":
-					case "full5":
-						rbNormalDisplay.Checked = true;
-						break;
+            //object displayMode = settings[TABMODULE_DISPLAYMODE] ?? "full";
+            //if(displayMode != null)
+            //{
+            //    /*
+            //     * Version 1.4 change 8/5/2008
+            //     * 
+            //     * The five day forecast is no longer available, due the not having the
+            //     * data in the RSS feed. Any option which used this should
+            //     * just use the correct 2 day forecast instead
+            //     * */
+            //    switch(displayMode.ToString())
+            //    {
+            //        case "full":
+            //        case "full5":
+            //            rbNormalDisplay.Checked = true;
+            //            break;
 
-					case "medium":
-					case "medium5":
-						rbMediumDisplay.Checked = true;
-						break;
+            //        case "medium":
+            //        case "medium5":
+            //            rbMediumDisplay.Checked = true;
+            //            break;
 
-					case "summary":
-						rbSmallDisplay.Checked = true;
-						break;
-				}				
-			}
+            //        case "summary":
+            //            rbSmallDisplay.Checked = true;
+            //            break;
+            //    }				
+            //}
 
             //load the flag to determine if we allow the user to persist the selected
             //weather location
-            object userPersist = settings[USER_PERSONIALISATION];
-            if (userPersist != null)
-            {
-                bool userStoreSelection = false;
-                bool.TryParse(userPersist.ToString(), out userStoreSelection);
+            chkUserPersist.Checked = ModuleSettings.AllowUserPersonialisation;
 
-                chkUserPersist.Checked = userStoreSelection;
-            }
 
 		}
 
@@ -225,7 +221,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 
 			objBTBYahooWeather.Url = objCtlBTBYahooWeather.CreateFeedUrl(txtFeedCode.Text, tempScale);
 
-			objBTBYahooWeather.WeatherId = new DataProvider().AddBTBWeatherFeed(objBTBYahooWeather);
+			objBTBYahooWeather.WeatherId = DataProvider.AddBTBWeatherFeed(objBTBYahooWeather);
 			objCtlBTBYahooWeather.UpdateWeatherFeed(objBTBYahooWeather, this.PortalSettings, this.ModuleConfiguration);
 
 		}
@@ -258,7 +254,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 				tempScale = BTBWeatherFeedController.TemperatureScale.Fahrenheit;
 
 
-			var feeds = new DataProvider().GetBTBWeatherFeedByModule(ModuleId);
+			var feeds = DataProvider.GetBTBWeatherFeedByModule(ModuleId);
 
 			foreach(BTBWeatherFeedInfo info in feeds)
 			{
@@ -266,7 +262,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 				info.Url = controller.CreateFeedUrl(controller.ExtractWeatherCodeFromUrl(info.Url),
 					tempScale);
 
-				new DataProvider().UpdateBTBWeatherFeed(info);
+				DataProvider.UpdateBTBWeatherFeed(info);
 			}
 		}
 
@@ -276,25 +272,26 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 			//the correct one for the new unit of temperature
 			BTBWeatherFeedController controller = new BTBWeatherFeedController();
 
-			ModuleController mc = new ModuleController();			
+//            ModuleController mc = new ModuleController();			
 
-			if(rbNormalDisplay.Checked)
-				mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "full");
-//			else if(rbNormalDisplayFiveDays.Checked)
-//				mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "full5");
-			else if(rbSmallDisplay.Checked)
-				mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "summary");
-			else if(rbMediumDisplay.Checked)
-				mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "medium");
-//			else if(rbMediumDisplayFiveDays.Checked)
-//				mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "medium5");
+//            //todo: MM fix me
+//            if(rbNormalDisplay.Checked)
+//                mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "full");
+////			else if(rbNormalDisplayFiveDays.Checked)
+////				mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "full5");
+//            else if(rbSmallDisplay.Checked)
+//                mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "summary");
+//            else if(rbMediumDisplay.Checked)
+//                mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "medium");
+////			else if(rbMediumDisplayFiveDays.Checked)
+////				mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "medium5");
 
-			var feeds = new DataProvider().GetBTBWeatherFeedByModule(ModuleId);
+            var feeds = DataProvider.GetBTBWeatherFeedByModule(ModuleId);
 
 			foreach(BTBWeatherFeedInfo info in feeds)
 			{
 				info.TransformedFeed = null;
-				new DataProvider().UpdateBTBWeatherFeed(info);
+				DataProvider.UpdateBTBWeatherFeed(info);
 			}
 		}
 
@@ -337,37 +334,36 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 				}
 
 				//check if we changed the display mode
-				ModuleController mc = new ModuleController();
-				Hashtable settings = mc.GetTabModuleSettings(this.TabModuleId);
+                //ModuleController mc = new ModuleController();
+                //Hashtable settings = mc.GetTabModuleSettings(this.TabModuleId);
 						
-				object displayMode = settings[TABMODULE_DISPLAYMODE];
+                //object displayMode = settings[TABMODULE_DISPLAYMODE];
 				
-				string previousDisplayMode;
+                //string previousDisplayMode;
 
-				if(displayMode == null)
-					previousDisplayMode = "full";
-				else
-					previousDisplayMode = displayMode.ToString();
+                //if(displayMode == null)
+                //    previousDisplayMode = "full";
+                //else
+                //    previousDisplayMode = displayMode.ToString();
 
-				string currentDisplayMode = null;
+                //string currentDisplayMode = null;
 				
-				if(rbNormalDisplay.Checked)
-					currentDisplayMode = "full";
-				else if(rbSmallDisplay.Checked)
-					currentDisplayMode = "summary";
-				else if(rbMediumDisplay.Checked)
-					currentDisplayMode = "medium";
+                //if(rbNormalDisplay.Checked)
+                //    currentDisplayMode = "full";
+                //else if(rbSmallDisplay.Checked)
+                //    currentDisplayMode = "summary";
+                //else if(rbMediumDisplay.Checked)
+                //    currentDisplayMode = "medium";
 
-				if(previousDisplayMode != currentDisplayMode)
-				{
-					//update the database and clear the cache transformation
-					ChangeDisplayMode();
-				}
+                //if(previousDisplayMode != currentDisplayMode)
+                //{
+                //    //update the database and clear the cache transformation
+                //    ChangeDisplayMode();
+                //}
 				
 				//set the default weather field
 				ChangeDefaultItem();
 
-                mc.UpdateTabModuleSetting(TabModuleId, USER_PERSONIALISATION, chkUserPersist.Checked.ToString());
                 if (chkUserPersist.Checked)
                     CreatePropertyDefinitions();
 				
@@ -434,7 +430,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 		private void cmdDeleteImage_Click(object sender, System.Web.UI.ImageClickEventArgs e)
 		{
 			int weatherId = Int32.Parse(lstLocations.SelectedValue);
-			new DataProvider().DeleteBTBWeatherFeed(weatherId);
+			DataProvider.DeleteBTBWeatherFeed(weatherId);
 
 			LoadExistingData();
 		}

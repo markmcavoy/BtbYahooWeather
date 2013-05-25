@@ -44,7 +44,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
 {
 	public class DataProvider
 	{
-        public BTBWeatherFeedInfo GetBTBWeatherFeed(int weatherId)
+        public static BTBWeatherFeedInfo GetBTBWeatherFeed(int weatherId)
         {
             using (var dataContext = DataContext.Instance())
             {
@@ -53,7 +53,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
             }
         }
 
-        public IEnumerable<BTBWeatherFeedInfo> GetBTBWeatherFeedByModule(int moduleId)
+        public static IEnumerable<BTBWeatherFeedInfo> GetBTBWeatherFeedByModule(int moduleId)
         {
             using (var dataContext = DataContext.Instance())
             {
@@ -62,7 +62,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
             }
         }
 
-		public int AddBTBWeatherFeed(BTBWeatherFeedInfo newFeed)
+        public static int AddBTBWeatherFeed(BTBWeatherFeedInfo newFeed)
         {
             using (var dataContext = DataContext.Instance())
             {
@@ -72,7 +72,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
             }
         }
 
-        public void UpdateBTBWeatherFeed(BTBWeatherFeedInfo feed)
+        public static void UpdateBTBWeatherFeed(BTBWeatherFeedInfo feed)
         {
             using (var dataContext = DataContext.Instance())
             {
@@ -81,7 +81,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
             }
         }
 
-        public void DeleteBTBWeatherFeed(int weatherId)
+        public static void DeleteBTBWeatherFeed(int weatherId)
         {
             using (var dataContext = DataContext.Instance())
             {
@@ -90,7 +90,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
             }
         }
 
-        public void SetDefaultFeed(int moduleId, int weatherId)
+        public static void SetDefaultFeed(int moduleId, int weatherId)
         {
             using (var dataContext = DataContext.Instance())
             {

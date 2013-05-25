@@ -48,7 +48,7 @@ using System.Collections.Generic;
 
 namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 {
-	public abstract class BTBYahooWeather : PortalModuleBase, IActionable, IPortable
+	public abstract class BTBYahooWeather : ModuleBase, IActionable, IPortable
 	{
         private const string USER_PERSONIALISATION = "BTBYahooWeather_UserPersist";
 
@@ -92,7 +92,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 				BTBWeatherFeedInfo info;
 				if (!Page.IsPostBack) 
 				{
-                    var weatherFeeds = new DataProvider().GetBTBWeatherFeedByModule(ModuleId);
+                    var weatherFeeds = DataProvider.GetBTBWeatherFeedByModule(ModuleId);
 
 					if((weatherFeeds == null))
 					{
@@ -118,7 +118,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 					}
 					
                     //check if we should load the users selected weather feed
-                    if (UserPersistanceEnabled && HttpContext.Current.User.Identity.IsAuthenticated)
+                    if (ModuleSettings.AllowUserPersonialisation && HttpContext.Current.User.Identity.IsAuthenticated)
                     {
                         //check if the user has selected otherwise just let the
                         //default location pick the selection
@@ -189,13 +189,13 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 		private void ddlLocations_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
 			int weatherId = Int32.Parse(ddlLocations.SelectedValue);
-            BTBWeatherFeedInfo info = new DataProvider().GetBTBWeatherFeed(weatherId);
+            BTBWeatherFeedInfo info = DataProvider.GetBTBWeatherFeed(weatherId);
 
             //determine if user persistance is enabled
             //and store the selection
-            if (UserPersistanceEnabled && HttpContext.Current.User.Identity.IsAuthenticated)
+            if (ModuleSettings.AllowUserPersonialisation && HttpContext.Current.User.Identity.IsAuthenticated)
             {
-                DotNetNuke.Entities.Users.UserInfo curUser = DotNetNuke.Entities.Users.UserController.GetUser(PortalId, UserId, false);
+                DotNetNuke.Entities.Users.UserInfo curUser = UserController.GetUserById(PortalId, UserId);
 
                 curUser.Profile.SetProfileProperty(USER_PERSONIALISATION, ddlLocations.SelectedValue);
                 UserController.UpdateUser(this.PortalId, curUser);
@@ -206,29 +206,8 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 
 		#endregion
 
-        /// <summary>
-        /// get if we should store the users persisted weather location
-        /// </summary>
-        private bool UserPersistanceEnabled
-        {
-            get
-            {
-                if (settings == null)
-                {
-                    ModuleController mc = new ModuleController();
-                    settings = mc.GetTabModuleSettings(this.TabModuleId);
-                }
+        
 
-                object setting = settings[USER_PERSONIALISATION];
-
-                bool result = false;
-
-                if (setting != null)
-                    bool.TryParse(setting.ToString(), out result);
-
-                return result;
-            }
-        }
 
 		private void ValidateFeedsHaveLocationName(IEnumerable<BTBWeatherFeedInfo> feeds)
 		{
