@@ -99,6 +99,7 @@
       <Name>DotNetNuke</Name>
       <HintPath>..\..\bin\DotNetNuke.dll</HintPath>
     </Reference>
+    <Reference Include="DotNetNuke.Web.Razor, Version=7.0.3.64, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -170,11 +171,11 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="BTBYahooWeather.dnn" />
+    <None Include="Templates\Razor\weatherReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Documentation\" />
     <Folder Include="Providers\" />
-    <Folder Include="Templates\Razor\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
