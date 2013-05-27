@@ -231,7 +231,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 			//check if we have a transformed feed or the item has expired from cache
             if (info != null)
             {
-                if (info.TransformedFeed == Null.NullString | info.CachedDate < DateTime.Now | info.LocationName == Null.NullString)
+                if (string.IsNullOrEmpty(info.TransformedFeed) | info.CachedDate < DateTime.Now | string.IsNullOrEmpty(info.LocationName))
                 {
                     BTBWeatherFeedController controller = new BTBWeatherFeedController();
                     controller.UpdateWeatherFeed(info, this.PortalSettings, this.ModuleConfiguration);

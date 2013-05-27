@@ -138,12 +138,15 @@
     <Compile Include="Components\ModuleBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Components\RazorModel\WeatherModel.cs" />
     <Compile Include="Components\RssReader.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Properties\assemblyinfo.cs" />
-    <Content Include="BTBYahooWeather.ascx" />
+    <Content Include="BTBYahooWeather.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="BTBYahooWeatherEdit.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>

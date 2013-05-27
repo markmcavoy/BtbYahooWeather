@@ -42,6 +42,7 @@ using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Entities.Profile;
 using BiteTheBullet.DNN.Modules.BTBYahooWeather.Components;
 using System.Linq;
+using System.IO;
 
 namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 {
@@ -76,11 +77,10 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 		}
 		#endregion
 
-		#region Controls
 		protected System.Web.UI.WebControls.LinkButton cmdUpdate;
 		protected System.Web.UI.WebControls.LinkButton cmdCancel;
 		protected System.Web.UI.WebControls.LinkButton cmdDelete;
-		#endregion
+
 
 		protected System.Web.UI.WebControls.Label lblFeedUpdate;
 		protected System.Web.UI.WebControls.Label lblFeedCacheExpired;
@@ -91,11 +91,12 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 		protected System.Web.UI.WebControls.ImageButton cmdDeleteImage;
 		protected System.Web.UI.WebControls.LinkButton lbnAddFeed;
 		protected System.Web.UI.WebControls.RequiredFieldValidator rfvWeatherCode;
-		protected System.Web.UI.WebControls.RadioButton rbNormalDisplay;
-		protected System.Web.UI.WebControls.RadioButton rbSmallDisplay;
-		protected System.Web.UI.WebControls.RadioButton rbMediumDisplay;
 		protected System.Web.UI.WebControls.DropDownList ddlDefaultFeed;
         protected System.Web.UI.WebControls.CheckBox chkUserPersist;
+        protected RadioButton rbXlst;
+        protected RadioButton rbRazor;
+        protected DropDownList ddlXsltTemplates;
+        protected DropDownList ddlRazorTemplates;
 
 
 		public int ItemId
@@ -116,7 +117,9 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 		}
 
         
-
+        /// <summary>
+        /// sets up the edit page
+        /// </summary>
 		private void LoadExistingData()
 		{
 			var list = DataProvider.GetBTBWeatherFeedByModule(this.ModuleId);
@@ -158,48 +161,44 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 			}
 			else
 			{
-					ddlDefaultFeed.Enabled = false;
+				ddlDefaultFeed.Enabled = false;
 			}
 
-            //todo: MM fix me
-			//load the current display defined for this module
-            //ModuleController mc = new ModuleController();
-            //Hashtable settings = mc.GetTabModuleSettings(this.TabModuleId);
-						
-            //object displayMode = settings[TABMODULE_DISPLAYMODE] ?? "full";
-            //if(displayMode != null)
-            //{
-            //    /*
-            //     * Version 1.4 change 8/5/2008
-            //     * 
-            //     * The five day forecast is no longer available, due the not having the
-            //     * data in the RSS feed. Any option which used this should
-            //     * just use the correct 2 day forecast instead
-            //     * */
-            //    switch(displayMode.ToString())
-            //    {
-            //        case "full":
-            //        case "full5":
-            //            rbNormalDisplay.Checked = true;
-            //            break;
+            //load all the xlst templates
+            LoadTemplateFiles("Xslt", ddlXsltTemplates);
 
-            //        case "medium":
-            //        case "medium5":
-            //            rbMediumDisplay.Checked = true;
-            //            break;
+            //load all the razor templates
+            LoadTemplateFiles("Razor", ddlRazorTemplates);
 
-            //        case "summary":
-            //            rbSmallDisplay.Checked = true;
-            //            break;
-            //    }				
-            //}
+
+            if (ModuleSettings.RenderEngine == BTBYahooWeatherSettings.TemplateEngine.Xlst)
+            {
+                rbXlst.Checked = true;
+                var item = ddlXsltTemplates.Items.FindByText(ModuleSettings.TemplateName);
+                if (item != null) 
+                    item.Selected = true;
+            }
+            else
+            {
+                rbRazor.Checked = true;
+                var item = ddlRazorTemplates.Items.FindByText(ModuleSettings.TemplateName);
+                if (item != null)
+                    item.Selected = true;
+            }
+
 
             //load the flag to determine if we allow the user to persist the selected
             //weather location
             chkUserPersist.Checked = ModuleSettings.AllowUserPersonialisation;
-
-
 		}
+
+        private void LoadTemplateFiles(string templateFolder, DropDownList ddl)
+        {
+            string folder = Server.MapPath("/DesktopModules/BTBYahooWeather/Templates/" + templateFolder);
+
+            ddl.DataSource = Directory.GetFiles(folder).Select(f => Path.GetFileName(f));
+            ddl.DataBind();
+        }
 
 
 		private void AddFeed()
@@ -272,19 +271,14 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 			//the correct one for the new unit of temperature
 			BTBWeatherFeedController controller = new BTBWeatherFeedController();
 
-//            ModuleController mc = new ModuleController();			
-
-//            //todo: MM fix me
-//            if(rbNormalDisplay.Checked)
-//                mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "full");
-////			else if(rbNormalDisplayFiveDays.Checked)
-////				mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "full5");
-//            else if(rbSmallDisplay.Checked)
-//                mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "summary");
-//            else if(rbMediumDisplay.Checked)
-//                mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "medium");
-////			else if(rbMediumDisplayFiveDays.Checked)
-////				mc.UpdateTabModuleSetting(TabModuleId, TABMODULE_DISPLAYMODE, "medium5");
+            if (rbXlst.Checked)
+            {
+                ModuleSettings.TemplateName = ddlXsltTemplates.SelectedItem.Text;
+            }
+            else
+            {
+                ModuleSettings.TemplateName = ddlRazorTemplates.SelectedItem.Text;
+            }
 
             var feeds = DataProvider.GetBTBWeatherFeedByModule(ModuleId);
 
@@ -333,33 +327,16 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 						ChangeTemperatureScale();
 				}
 
-				//check if we changed the display mode
-                //ModuleController mc = new ModuleController();
-                //Hashtable settings = mc.GetTabModuleSettings(this.TabModuleId);
-						
-                //object displayMode = settings[TABMODULE_DISPLAYMODE];
-				
-                //string previousDisplayMode;
+				//check if we changed the render engine or the template
+                var selectedRenderEngine = rbXlst.Checked ? BTBYahooWeatherSettings.TemplateEngine.Xlst : BTBYahooWeatherSettings.TemplateEngine.Razor;
+                var selectedTemplate = rbXlst.Checked ? ddlXsltTemplates.SelectedItem.Text : ddlRazorTemplates.SelectedItem.Text;
 
-                //if(displayMode == null)
-                //    previousDisplayMode = "full";
-                //else
-                //    previousDisplayMode = displayMode.ToString();
-
-                //string currentDisplayMode = null;
-				
-                //if(rbNormalDisplay.Checked)
-                //    currentDisplayMode = "full";
-                //else if(rbSmallDisplay.Checked)
-                //    currentDisplayMode = "summary";
-                //else if(rbMediumDisplay.Checked)
-                //    currentDisplayMode = "medium";
-
-                //if(previousDisplayMode != currentDisplayMode)
-                //{
-                //    //update the database and clear the cache transformation
-                //    ChangeDisplayMode();
-                //}
+                if (selectedRenderEngine != ModuleSettings.RenderEngine ||
+                     selectedTemplate != ModuleSettings.TemplateName)
+                {
+                    //update the database and clear the cache transformation
+                    ChangeDisplayMode();
+                }
 				
 				//set the default weather field
 				ChangeDefaultItem();

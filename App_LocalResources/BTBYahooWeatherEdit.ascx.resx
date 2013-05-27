@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="plFeedCode.Text" xml:space="preserve">
     <value>Weather Feed Code</value>
@@ -170,25 +170,10 @@
     <value>Add Weather Feed</value>
   </data>
   <data name="plDisplayType.Text" xml:space="preserve">
-    <value>Display Mode</value>
+    <value>Display Template</value>
   </data>
   <data name="plDisplayType.Help" xml:space="preserve">
-    <value>Defines the amount of information that is displayed to the user</value>
-  </data>
-  <data name="rbNormalDisplay.Text" xml:space="preserve">
-    <value>Full Weather Report with 2 Day Forecast</value>
-  </data>
-  <data name="rbSmallDisplay.Text" xml:space="preserve">
-    <value>Summary Weather Report</value>
-  </data>
-  <data name="rbMediumDisplay.Text" xml:space="preserve">
-    <value>Summary Weather Report with 2 Day Forecast</value>
-  </data>
-  <data name="rbNormalDisplayFiveDays.Text" xml:space="preserve">
-    <value>Full Weather Report with 5 Day Forecast</value>
-  </data>
-  <data name="rbMediumDisplayFiveDays.Text" xml:space="preserve">
-    <value>Summary Weather Report with 5 Day Forecast</value>
+    <value>Defines which template we are using to render the HTML, you can find the templates located in this folder /DesktopModules/BTBYahooWeather/Templates. You are also free to add your own templates into the relevant folder and use that too.</value>
   </data>
   <data name="plDefaultFeed.Text" xml:space="preserve">
     <value>Default Feed</value>
@@ -204,5 +189,17 @@
   </data>
   <data name="plUserPersist.Text" xml:space="preserve">
     <value>User Weather Personalization</value>
+  </data>
+  <data name="lblRenderEngine.Help" xml:space="preserve">
+    <value>Selects which template engine we are going to use to generate the HTML from the weather feed.</value>
+  </data>
+  <data name="lblRenderEngine.Text" xml:space="preserve">
+    <value>Render Engine</value>
+  </data>
+  <data name="rbRazor.Text" xml:space="preserve">
+    <value>Razor</value>
+  </data>
+  <data name="rbXlst.Text" xml:space="preserve">
+    <value>XLST</value>
   </data>
 </root>

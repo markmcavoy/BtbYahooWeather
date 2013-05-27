@@ -39,15 +39,19 @@
 			<asp:RadioButton id="rbTempF" runat="server" ResourceKey="rbTempF.Text" GroupName="TemperatureScale"
 				CssClass="Normal"></asp:RadioButton></td>
 	</tr>
+    <tr>
+        <td class="SubHead" valign="top"><dnn:label id="lblRenderEngine" runat="server" suffix=":" controlname="rbXlst"></dnn:label></td>
+		<td>
+			<asp:RadioButton id="rbXlst" runat="server" ResourceKey="rbXlst.Text" GroupName="RenderEngine"
+				CssClass="Normal"></asp:RadioButton>
+			<asp:RadioButton id="rbRazor" runat="server" ResourceKey="rbRazor.Text" GroupName="RenderEngine"
+				CssClass="Normal"></asp:RadioButton>
+    </tr>
 	<tr>
 		<td class="SubHead" valign="top"><dnn:label id="plDisplayType" runat="server" suffix=":" controlname="rbNormalDisplay"></dnn:label></td>
 		<td>
-			<asp:RadioButton id="rbNormalDisplay" runat="server" ResourceKey="rbNormalDisplay.Text" GroupName="DisplayType"
-				CssClass="Normal"></asp:RadioButton><br>
-			<asp:RadioButton id="rbMediumDisplay" runat="server" ResourceKey="rbMediumDisplay.Text" GroupName="DisplayType"
-				CssClass="Normal"></asp:RadioButton><br>
-			<asp:RadioButton id="rbSmallDisplay" runat="server" ResourceKey="rbSmallDisplay.Text" GroupName="DisplayType"
-				CssClass="Normal"></asp:RadioButton>
+			<asp:DropDownList runat="server" ID="ddlXsltTemplates" CssClass="ddlXsltTemplates"/>
+			<asp:DropDownList runat="server" ID="ddlRazorTemplates" CssClass="ddlRazorTemplates"/>
 		</td>
 	</tr>
 </table>

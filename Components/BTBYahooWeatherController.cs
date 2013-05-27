@@ -47,6 +47,7 @@ using DotNetNuke.Services.Localization;
 using DotNetNuke.Entities.Host;
 using System.Collections.Generic;
 using DotNetNuke.Web.Razor;
+using BiteTheBullet.DNN.Modules.BTBYahooWeather.Components.RazorModel;
 
 namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
 {
@@ -199,19 +200,19 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
             //if we don't have a custom XSLT defined then we should just use the 
             //default one which we install with the module
             string razorFolder = HttpContext.Current.Server.MapPath("~/DesktopModules/BTBYahooWeather/Templates/Razor");
-            razorTemplate = Path.Combine(razorFolder, razorTemplate);
+            string pathCheck = Path.Combine(razorFolder, razorTemplate);
 
-            if (!File.Exists(razorTemplate))
+            if (!File.Exists(pathCheck))
             {
                 //if we don't have the file call back to the default
                 //xslt file which should exist in all instances
-                razorTemplate = Path.Combine(razorFolder, "weatherReport.cshtml");
+                razorTemplate = "weatherReport.cshtml";
             }
 
             using (var stringWriter = new StringWriter())
             {
-                var razorEngine = new RazorEngine(razorTemplate, null, null);
-                razorEngine.Render(stringWriter);
+                var razorEngine = new RazorEngine("~/DesktopModules/BTBYahooWeather/Templates/Razor/" + razorTemplate, null, null);
+                razorEngine.Render<WeatherModel>(stringWriter, new WeatherModel(info.Feed));
 
                 info.TransformedFeed = stringWriter.ToString();
             }
