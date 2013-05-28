@@ -274,10 +274,12 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
             if (rbXlst.Checked)
             {
                 ModuleSettings.TemplateName = ddlXsltTemplates.SelectedItem.Text;
+                ModuleSettings.RenderEngine = BTBYahooWeatherSettings.TemplateEngine.Xlst;
             }
             else
             {
                 ModuleSettings.TemplateName = ddlRazorTemplates.SelectedItem.Text;
+                ModuleSettings.RenderEngine = BTBYahooWeatherSettings.TemplateEngine.Razor;
             }
 
             var feeds = DataProvider.GetBTBWeatherFeedByModule(ModuleId);

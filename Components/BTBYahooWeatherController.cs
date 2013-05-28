@@ -163,19 +163,17 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
             //to render the weather into HTML
             var moduleSettings = new BTBYahooWeatherSettings(moduleConfiguration.TabModuleID);
 
-            //todo: MM turn on we get completed
-            //switch (moduleSettings.RenderEngine)
-            //{
-            //    case BTBYahooWeatherSettings.TemplateEngine.Razor:
-            //        RenderHtmlUsingRazor(info, moduleSettings.TemplateName);
-            //        break;
+            switch (moduleSettings.RenderEngine)
+            {
+                case BTBYahooWeatherSettings.TemplateEngine.Razor:
+                    RenderHtmlUsingRazor(info, moduleSettings.TemplateName);
+                    break;
 
-            //    case BTBYahooWeatherSettings.TemplateEngine.Xlst:
-            //    default:
-            //        RenderHtmlUsingXslt(info, moduleSettings.TemplateName);
-            //        break;
-            //}
-            RenderHtmlUsingRazor(info, moduleSettings.TemplateName);
+                case BTBYahooWeatherSettings.TemplateEngine.Xlst:
+                default:
+                    RenderHtmlUsingXslt(info, moduleSettings.TemplateName);
+                    break;
+            }
 			
 			//get the ttl
 			int ttl = reader.Ttl();
