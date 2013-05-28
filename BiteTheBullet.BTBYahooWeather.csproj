@@ -150,6 +150,7 @@
     <Content Include="BTBYahooWeatherEdit.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
+    <Content Include="module.css" />
     <Content Include="Templates\Xslt\weatherReport.xsl" />
     <Content Include="Templates\Xslt\weatherReportFive.xsl" />
     <Content Include="Templates\Xslt\weatherReportMedium.xsl" />

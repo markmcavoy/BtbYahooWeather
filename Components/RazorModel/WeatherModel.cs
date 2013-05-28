@@ -81,7 +81,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components.RazorModel
                 {
                     Caption = nav.SelectSingleNode("//yweather:condition/@text", ns).Value,
                     Code = int.Parse(nav.SelectSingleNode("//yweather:condition/@code", ns).Value),
-                    Temperture = int.Parse(nav.SelectSingleNode("//yweather:condition/@temp", ns).Value),
+                    Temperature = int.Parse(nav.SelectSingleNode("//yweather:condition/@temp", ns).Value),
                     Date = DateTime.Parse(nav.SelectSingleNode("//yweather:condition/@date", ns).Value.Substring(0, nav.SelectSingleNode("//yweather:condition/@date", ns).Value.Length- 3))
                 };
                 CurrentCondition = conditions;
@@ -179,7 +179,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components.RazorModel
 
             public int Code { get; set; }
 
-            public int Temperture { get; set; }
+            public int Temperature { get; set; }
 
             public DateTime Date { get; set; }
         }

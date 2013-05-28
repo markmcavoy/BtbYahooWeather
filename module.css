@@ -1,0 +1,30 @@
+.simpleWeather
+{
+}
+
+.simpleWeather p
+{
+margin:0px 0px 5px 0px;
+}
+
+ul.simpleForecastList{
+margin:0px auto;
+padding:0px;
+}
+
+
+.simpleForecastList li{
+list-style-type:none;
+padding:0px;
+margin:0px 0px 0px 5px;
+float:left;
+width:60px;
+}
+
+.simpleForecastList p{
+text-align:center;
+}
+
+.simpleForecastList img{
+margin:0px 0px 0px 5px;
+}

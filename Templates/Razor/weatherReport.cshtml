@@ -1,5 +1,20 @@
 ﻿@inherits DotNetNuke.Web.Razor.DotNetNukeWebPage<BiteTheBullet.DNN.Modules.BTBYahooWeather.Components.RazorModel.WeatherModel>
 
-<div>    
-MARK test @Model.Location.Long, @Model.Location.Lat
+<div class="simpleWeather">
+	<h2>Conditons for @Model.Location.City, @Model.Location.Region</h2>
+	<div>    
+		<img src="http://us.i1.yimg.com/us.yimg.com/i/us/we/52/@(Model.CurrentCondition.Code).gif" alt="@Model.CurrentCondition.Caption"/>
+		<p>@Model.CurrentCondition.Caption @(Model.CurrentCondition.Temperature)@(Model.Units.Temperature)</p>
+	</div>
+	<h3>Forecast</h3>
+	<ul class="simpleForecastList">
+		@foreach(var item in Model.Forecast){
+		<li>
+			<p>@item.Day</p>
+			<img src="http://us.i1.yimg.com/us.yimg.com/i/us/we/52/@(item.Code).gif" alt="@item.Caption"/>
+			<p>@(item.TempHigh)@(Model.Units.Temperature)</p>
+			<p>@(item.TempLow)@(Model.Units.Temperature)</p>
+		</li>
+		}
+	</ul>
 </div>
