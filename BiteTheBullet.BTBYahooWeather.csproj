@@ -99,7 +99,9 @@
       <Name>DotNetNuke</Name>
       <HintPath>..\..\bin\DotNetNuke.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetNuke.Web.Razor, Version=7.0.3.64, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="DotNetNuke.Web.Razor, Version=7.0.3.64, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -142,6 +144,7 @@
     <Compile Include="Components\RssReader.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Extensions\HtmlHelperExtension.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Properties\assemblyinfo.cs" />
     <Content Include="BTBYahooWeather.ascx">

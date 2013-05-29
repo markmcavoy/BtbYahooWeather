@@ -43,15 +43,20 @@
         <td class="SubHead" valign="top"><dnn:label id="lblRenderEngine" runat="server" suffix=":" controlname="rbXlst"></dnn:label></td>
 		<td>
 			<asp:RadioButton id="rbXlst" runat="server" ResourceKey="rbXlst.Text" GroupName="RenderEngine"
-				CssClass="Normal"></asp:RadioButton>
+				CssClass="rbXlst Normal RenderEngine"></asp:RadioButton>
 			<asp:RadioButton id="rbRazor" runat="server" ResourceKey="rbRazor.Text" GroupName="RenderEngine"
-				CssClass="Normal"></asp:RadioButton>
+				CssClass="rbRazor Normal RenderEngine"></asp:RadioButton>
+        </td>
     </tr>
 	<tr>
 		<td class="SubHead" valign="top"><dnn:label id="plDisplayType" runat="server" suffix=":" controlname="rbNormalDisplay"></dnn:label></td>
 		<td>
-			<asp:DropDownList runat="server" ID="ddlXsltTemplates" CssClass="ddlXsltTemplates"/>
-			<asp:DropDownList runat="server" ID="ddlRazorTemplates" CssClass="ddlRazorTemplates"/>
+            <div id="divXsltTemplates" style="display:none;">
+			    <asp:DropDownList runat="server" ID="ddlXsltTemplates" CssClass="ddlXsltTemplates"/>
+            </div>
+            <div id="divRazorTemplates" style="display:none;">
+			    <asp:DropDownList runat="server" ID="ddlRazorTemplates" CssClass="ddlRazorTemplates"/>
+            </div>
 		</td>
 	</tr>
 </table>
@@ -59,3 +64,30 @@
 	CausesValidation="False"></asp:linkbutton>
 <asp:linkbutton id="cmdCancel" CssClass="CommandButton" runat="server" CausesValidation="False"
 	BorderStyle="None" resourcekey="cmdCancel"></asp:linkbutton>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+
+function DisplayTemplateDropDown()
+{ 
+    if(jQuery(".rbXlst :input").is(":checked"))
+    {
+        jQuery("#divXsltTemplates").show();
+        jQuery("#divRazorTemplates").hide();
+    }else{
+        jQuery("#divXsltTemplates").hide();
+        jQuery("#divRazorTemplates").show();
+    }
+}
+
+jQuery(document).ready(function(){
+
+    DisplayTemplateDropDown();
+
+    jQuery(".RenderEngine :input").change(function(){
+        DisplayTemplateDropDown();
+    });
+});
+
+/* ]]> */
+</script>

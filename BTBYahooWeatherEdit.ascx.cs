@@ -43,6 +43,7 @@ using DotNetNuke.Entities.Profile;
 using BiteTheBullet.DNN.Modules.BTBYahooWeather.Components;
 using System.Linq;
 using System.IO;
+using DotNetNuke.Framework;
 
 namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 {
@@ -298,6 +299,8 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 			{
 				if(!Page.IsPostBack)
 					LoadExistingData();
+
+                jQuery.RegisterJQuery(this.Page);
 			} 
 			catch (Exception exc) 
 			{

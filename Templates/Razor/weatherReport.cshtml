@@ -1,4 +1,10 @@
-﻿@inherits DotNetNuke.Web.Razor.DotNetNukeWebPage<BiteTheBullet.DNN.Modules.BTBYahooWeather.Components.RazorModel.WeatherModel>
+﻿@using BiteTheBullet.DNN.Modules.BTBYahooWeather.Extensions;
+@inherits DotNetNuke.Web.Razor.DotNetNukeWebPage<BiteTheBullet.DNN.Modules.BTBYahooWeather.Components.RazorModel.WeatherModel>
+
+@{ var list = new Dictionary<string, int> {{"mark", 1}, {"test", 2}};}
+
+
+@Html.DropDownListFor("ddlLocation", list, null)
 
 <div class="simpleWeather">
 	<h2>Conditons for @Model.Location.City, @Model.Location.Region</h2>
