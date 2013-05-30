@@ -140,11 +140,13 @@
     <Compile Include="Components\ModuleBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Components\RazorModel\MainModel.cs" />
     <Compile Include="Components\RazorModel\WeatherModel.cs" />
     <Compile Include="Components\RssReader.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions\HtmlHelperExtension.cs" />
+    <Compile Include="Extensions\SelectListItem.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Properties\assemblyinfo.cs" />
     <Content Include="BTBYahooWeather.ascx">

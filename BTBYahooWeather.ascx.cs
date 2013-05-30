@@ -90,40 +90,40 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 			{
 				BTBWeatherFeedController controller = new BTBWeatherFeedController();
 				BTBWeatherFeedInfo info;
-				if (!Page.IsPostBack) 
-				{
+                if (!Page.IsPostBack)
+                {
                     var weatherFeeds = DataProvider.GetBTBWeatherFeedByModule(ModuleId);
 
-					if((weatherFeeds == null))
-					{
-						//this module does not have a configured
-						//weather feed, info the user						
-						DotNetNuke.UI.Skins.Skin.AddModuleMessage(this,
-							Localization.GetString("FeedNotSet.Text",this.LocalResourceFile),
-							DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.RedError);
-						return;
-					}
-					
+                    if ((weatherFeeds == null))
+                    {
+                        //this module does not have a configured
+                        //weather feed, info the user						
+                        DotNetNuke.UI.Skins.Skin.AddModuleMessage(this,
+                            Localization.GetString("FeedNotSet.Text", this.LocalResourceFile),
+                            DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.RedError);
+                        return;
+                    }
 
-					if(weatherFeeds.Count() > 1)
-					{
-						ValidateFeedsHaveLocationName(weatherFeeds);
 
-						pnlDropDown.Visible = true;
-						ddlLocations.DataTextField = "LocationName";
-						ddlLocations.DataValueField = "WeatherId";
-                        
+                    if (weatherFeeds.Count() > 1)
+                    {
+                        ValidateFeedsHaveLocationName(weatherFeeds);
+
+                        pnlDropDown.Visible = true;
+                        ddlLocations.DataTextField = "LocationName";
+                        ddlLocations.DataValueField = "WeatherId";
+
                         ddlLocations.DataSource = weatherFeeds.OrderBy(w => w.LocationName);
-						ddlLocations.DataBind();
-					}
-					
+                        ddlLocations.DataBind();
+                    }
+
                     //check if we should load the users selected weather feed
                     if (ModuleSettings.AllowUserPersonialisation && HttpContext.Current.User.Identity.IsAuthenticated)
                     {
                         //check if the user has selected otherwise just let the
                         //default location pick the selection
 
-                        DotNetNuke.Entities.Users.UserInfo curUser = DotNetNuke.Entities.Users.UserController.GetUser(PortalId, UserId, false);
+                        DotNetNuke.Entities.Users.UserInfo curUser = UserController.GetUserById(PortalId, UserId);
                         string location = curUser.Profile.GetPropertyValue(USER_PERSONIALISATION);
                         if (location != null)
                         {
@@ -152,20 +152,20 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
                     }
 
 
-					//check if we have a default feed, overwise show the first time
-					BTBWeatherFeedInfo defaultInfo = controller.GetDefaultFeed(weatherFeeds);
-					if(defaultInfo != null)
-					{
-						info = defaultInfo;
-						ddlLocations.SelectedValue = defaultInfo.WeatherId.ToString();
-					}
-					else
-					{					
-						info = weatherFeeds.FirstOrDefault();
-					}
-					
-					DisplayFeed(info);	
-				}
+                    //check if we have a default feed, overwise show the first time
+                    BTBWeatherFeedInfo defaultInfo = controller.GetDefaultFeed(weatherFeeds);
+                    if (defaultInfo != null)
+                    {
+                        info = defaultInfo;
+                        ddlLocations.SelectedValue = defaultInfo.WeatherId.ToString();
+                    }
+                    else
+                    {
+                        info = weatherFeeds.FirstOrDefault();
+                    }
+
+                    DisplayFeed(info);
+                }
 			}
 			catch(System.Net.WebException exc)
 			{
@@ -235,6 +235,14 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
                 {
                     BTBWeatherFeedController controller = new BTBWeatherFeedController();
                     controller.UpdateWeatherFeed(info, this.PortalSettings, this.ModuleConfiguration);
+                }
+                else if(ModuleSettings.RenderEngine == BTBYahooWeatherSettings.TemplateEngine.Razor)
+                {
+                    //if we are usig razor always update the html since we may have logic in the
+                    //cshtml which is doing something and needs to render the html different and
+                    //not just display the cached version
+                    BTBWeatherFeedController controller = new BTBWeatherFeedController();
+                    controller.RenderRssData(info, this.ModuleConfiguration);
                 }
 
                 litOutput.Text = info.TransformedFeed; 

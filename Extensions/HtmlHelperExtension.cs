@@ -13,23 +13,19 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Extensions
 {
     public static class HtmlHelperExtension
     {
-        public static HtmlString DropDownListFor(this HtmlHelper helper, string id, IDictionary<string, int> data, string selectedItem)
+        public static HtmlString DropDownListFor(this HtmlHelper helper, string id, IEnumerable<SelectListItem> items)
         {
             var ddl = new DropDownList();
             ddl.ID = id;
 
-            foreach (var item in data)
+            foreach (var item in items)
             {
                 ddl.Items.Add(new ListItem(item.Key, item.Value.ToString()));
-            }
 
-            if (!string.IsNullOrEmpty(selectedItem))
-            {
-                var selected = ddl.Items.FindByText(selectedItem);
-                if (selected != null)
-                    selected.Selected = true; 
+                if (item.Selected)
+                    ddl.Items[ddl.Items.Count - 1].Selected = true;
             }
-
+            
             return RenderControl(ddl);
         }
 

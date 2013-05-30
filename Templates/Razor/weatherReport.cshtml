@@ -1,26 +1,45 @@
 ﻿@using BiteTheBullet.DNN.Modules.BTBYahooWeather.Extensions;
-@inherits DotNetNuke.Web.Razor.DotNetNukeWebPage<BiteTheBullet.DNN.Modules.BTBYahooWeather.Components.RazorModel.WeatherModel>
+@inherits DotNetNuke.Web.Razor.DotNetNukeWebPage<BiteTheBullet.DNN.Modules.BTBYahooWeather.Components.RazorModel.MainModel>
 
-@{ var list = new Dictionary<string, int> {{"mark", 1}, {"test", 2}};}
+@{ 
+	var list = from l in Model.Locations
+				orderby l.Value
+				select new BiteTheBullet.DNN.Modules.BTBYahooWeather.Extensions.SelectListItem()
+				{
+					Key = l.Value,
+					Value = l.Key.ToString(),
+					Selected = Request["ddlRLocation"] == l.Value
+				};
+}
 
+<h4>@DateTime.Now</h4>
+<p>
+DDL value=@Request.Form["ddlRLocation"]
+</p>
 
-@Html.DropDownListFor("ddlLocation", list, null)
+@Html.DropDownListFor("ddlRLocation", list)
 
 <div class="simpleWeather">
-	<h2>Conditons for @Model.Location.City, @Model.Location.Region</h2>
+	<h2>Conditons for @Model.Weather.Location.City, @Model.Weather.Location.Region</h2>
 	<div>    
-		<img src="http://us.i1.yimg.com/us.yimg.com/i/us/we/52/@(Model.CurrentCondition.Code).gif" alt="@Model.CurrentCondition.Caption"/>
-		<p>@Model.CurrentCondition.Caption @(Model.CurrentCondition.Temperature)@(Model.Units.Temperature)</p>
+		<img src="http://us.i1.yimg.com/us.yimg.com/i/us/we/52/@(Model.Weather.CurrentCondition.Code).gif" alt="@Model.Weather.CurrentCondition.Caption"/>
+		<p>@Model.Weather.CurrentCondition.Caption @(Model.Weather.CurrentCondition.Temperature)&deg;@(Model.Weather.Units.Temperature)</p>
 	</div>
 	<h3>Forecast</h3>
 	<ul class="simpleForecastList">
-		@foreach(var item in Model.Forecast){
+		@foreach(var item in Model.Weather.Forecast){
 		<li>
 			<p>@item.Day</p>
 			<img src="http://us.i1.yimg.com/us.yimg.com/i/us/we/52/@(item.Code).gif" alt="@item.Caption"/>
-			<p>@(item.TempHigh)@(Model.Units.Temperature)</p>
-			<p>@(item.TempLow)@(Model.Units.Temperature)</p>
+			<p>@(item.TempHigh)&deg;@(Model.Weather.Units.Temperature)</p>
+			<p>@(item.TempLow)&deg;@(Model.Weather.Units.Temperature)</p>
 		</li>
 		}
 	</ul>
 </div>
+
+<script type="text/javascript">
+
+	jQuery("#ddlRLocation").change(function(){ jQuery("form").submit(); });
+
+</script>

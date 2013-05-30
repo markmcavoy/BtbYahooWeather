@@ -159,21 +159,8 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
 			//get the raw feed
 			info.Feed = reader.Response();
 
-            //work out if we are going to use the XSLT files or the razor engine
-            //to render the weather into HTML
-            var moduleSettings = new BTBYahooWeatherSettings(moduleConfiguration.TabModuleID);
-
-            switch (moduleSettings.RenderEngine)
-            {
-                case BTBYahooWeatherSettings.TemplateEngine.Razor:
-                    RenderHtmlUsingRazor(info, moduleSettings.TemplateName);
-                    break;
-
-                case BTBYahooWeatherSettings.TemplateEngine.Xlst:
-                default:
-                    RenderHtmlUsingXslt(info, moduleSettings.TemplateName);
-                    break;
-            }
+            //render the xml into the HTML
+            RenderRssData(info, moduleConfiguration);
 			
 			//get the ttl
 			int ttl = reader.Ttl();
@@ -193,6 +180,30 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
             DataProvider.UpdateBTBWeatherFeed(info);
 		}
 
+        /// <summary>
+        /// renders the xml data into the HTML
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="moduleConfiguration"></param>
+        public void RenderRssData(BTBWeatherFeedInfo info, ModuleInfo moduleConfiguration)
+        {
+            //work out if we are going to use the XSLT files or the razor engine
+            //to render the weather into HTML
+            var moduleSettings = new BTBYahooWeatherSettings(moduleConfiguration.TabModuleID);
+
+            switch (moduleSettings.RenderEngine)
+            {
+                case BTBYahooWeatherSettings.TemplateEngine.Razor:
+                    RenderHtmlUsingRazor(info, moduleSettings.TemplateName);
+                    break;
+
+                case BTBYahooWeatherSettings.TemplateEngine.Xlst:
+                default:
+                    RenderHtmlUsingXslt(info, moduleSettings.TemplateName);
+                    break;
+            }
+        }
+
         private void RenderHtmlUsingRazor(BTBWeatherFeedInfo info, string razorTemplate)
         {
             //if we don't have a custom XSLT defined then we should just use the 
@@ -210,7 +221,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
             using (var stringWriter = new StringWriter())
             {
                 var razorEngine = new RazorEngine("~/DesktopModules/BTBYahooWeather/Templates/Razor/" + razorTemplate, null, null);
-                razorEngine.Render<WeatherModel>(stringWriter, new WeatherModel(info.Feed));
+                razorEngine.Render<MainModel>(stringWriter, new MainModel(info.ModuleId, info.Feed));
 
                 info.TransformedFeed = stringWriter.ToString();
             }
