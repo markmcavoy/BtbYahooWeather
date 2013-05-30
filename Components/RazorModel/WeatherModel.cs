@@ -12,6 +12,13 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components.RazorModel
     {
         string data = null;
 
+
+        /// <summary>
+        /// cstor which extracts the data from the XML feed and push it into
+        /// the strongly typed class which is then available in the razor script
+        /// files
+        /// </summary>
+        /// <param name="xmlData"></param>
         public WeatherModel(string xmlData)
         {
             data = xmlData;

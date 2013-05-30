@@ -45,6 +45,7 @@ using System.Linq;
 using DotNetNuke.Entities.Users;
 using BiteTheBullet.DNN.Modules.BTBYahooWeather.Components;
 using System.Collections.Generic;
+using DotNetNuke.Framework;
 
 namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 {
@@ -57,9 +58,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 		protected System.Web.UI.WebControls.Label lblLocation;
 		protected System.Web.UI.WebControls.Panel pnlDropDown;
 		protected System.Web.UI.WebControls.Label lblFeedOutput;
-
-        private Hashtable settings = null;
-
+        
 		#region Web Form Designer generated code
 		override protected void OnInit(EventArgs e)
 		{
@@ -88,6 +87,8 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather
 		{
 			try 
 			{
+                jQuery.RequestRegistration();
+
 				BTBWeatherFeedController controller = new BTBWeatherFeedController();
 				BTBWeatherFeedInfo info;
                 if (!Page.IsPostBack)

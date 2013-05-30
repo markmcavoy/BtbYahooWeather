@@ -80,7 +80,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
 		/// </summary>
         public BTBWeatherFeedInfo GetDefaultFeed(IEnumerable<BTBWeatherFeedInfo> weatherList)
 		{
-			if(weatherList != null)
+			if(weatherList == null)
 				return null;
 			
 			foreach(BTBWeatherFeedInfo item in weatherList)

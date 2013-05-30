@@ -1,24 +1,6 @@
 ﻿@using BiteTheBullet.DNN.Modules.BTBYahooWeather.Extensions;
 @inherits DotNetNuke.Web.Razor.DotNetNukeWebPage<BiteTheBullet.DNN.Modules.BTBYahooWeather.Components.RazorModel.MainModel>
 
-@{ 
-	var list = from l in Model.Locations
-				orderby l.Value
-				select new BiteTheBullet.DNN.Modules.BTBYahooWeather.Extensions.SelectListItem()
-				{
-					Key = l.Value,
-					Value = l.Key.ToString(),
-					Selected = Request["ddlRLocation"] == l.Value
-				};
-}
-
-<h4>@DateTime.Now</h4>
-<p>
-DDL value=@Request.Form["ddlRLocation"]
-</p>
-
-@Html.DropDownListFor("ddlRLocation", list)
-
 <div class="simpleWeather">
 	<h2>Conditons for @Model.Weather.Location.City, @Model.Weather.Location.Region</h2>
 	<div>    
@@ -37,9 +19,3 @@ DDL value=@Request.Form["ddlRLocation"]
 		}
 	</ul>
 </div>
-
-<script type="text/javascript">
-
-	jQuery("#ddlRLocation").change(function(){ jQuery("form").submit(); });
-
-</script>
