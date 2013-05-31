@@ -161,14 +161,6 @@
     <Content Include="Templates\Xslt\weatherReportMedium.xsl" />
     <Content Include="Templates\Xslt\weatherReportMediumFive.xsl" />
     <Content Include="Templates\Xslt\weatherReportSmall.xsl" />
-    <EmbeddedResource Include="BTBYahooWeather.ascx.resx">
-      <DependentUpon>BTBYahooWeather.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="BTBYahooWeatherEdit.ascx.resx">
-      <DependentUpon>BTBYahooWeatherEdit.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <None Include="01.00.00.SqlDataProvider" />
     <None Include="01.02.00.SqlDataProvider" />
     <None Include="01.06.00.SqlDataProvider" />
