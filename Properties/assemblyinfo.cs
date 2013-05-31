@@ -41,7 +41,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("www.bitethebullet.co.uk")]
 [assembly: AssemblyProduct("BTBYahooWeather")]
-[assembly: AssemblyCopyright("www.bitethebullet.co.uk 2007-2010")]
+[assembly: AssemblyCopyright("www.bitethebullet.co.uk 2007-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 
@@ -56,7 +56,7 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.7.*")]
+[assembly: AssemblyVersion("2.0.0")]
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyKeyName("")]
