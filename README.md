@@ -14,7 +14,7 @@ You are free to download and use the module and sourcecode. If you are looking f
 
 The module can either use a XSLT or Razor file to convert the raw weather data into HTML. You are also able to make your own templates using the ones provided as a reference.
 
-(http://www.bitethebullet.co.uk/portals/0/btbyahooweather/github/btb_weather.png)
+![Simple Template Output](http://www.bitethebullet.co.uk/portals/0/btbyahooweather/github/btb_weather.png)
 
-(http://www.bitethebullet.co.uk/portals/0/btbyahooweather/github/btb_weather_edit.png)
+![Module Settings](http://www.bitethebullet.co.uk/portals/0/btbyahooweather/github/btb_weather_edit.png)
 
