@@ -83,13 +83,7 @@ namespace BiteTheBullet.DNN.Modules.BTBYahooWeather.Components
 			if(weatherList == null)
 				return null;
 			
-			foreach(BTBWeatherFeedInfo item in weatherList)
-			{
-				if(item.DefaultFeed)
-					return item;
-			}
-			
-			return (BTBWeatherFeedInfo)weatherList.First();
+            return weatherList.Where(w => w.DefaultFeed).FirstOrDefault();
 		}
 		
 		/// <summary>
